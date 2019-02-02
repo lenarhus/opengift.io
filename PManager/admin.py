@@ -10,7 +10,7 @@ from PManager.models import Credit, Specialty, RatingHits, PM_Project_Donation, 
     PM_User_Achievement, PM_Achievement, AccessInterface, \
     PM_Reminder, PM_Project_Achievement, Conditions, Test, Fee, TaskDraft, PaymentRequest, \
     RatingHistory, FineHistory, Release, Integration, SlackIntegration, PM_MilestoneChanges, \
-    FaqQuestions, FaqQuestionsCategory, Tags
+    FaqQuestions, FaqQuestionsCategory, Tags, Dependency
 from PManager.models import ObjectTags
 
 
@@ -111,6 +111,7 @@ admin.site.register(FaqQuestionsCategory)
 admin.site.register(FaqQuestions)
 admin.site.register(PM_Hackathon)
 admin.site.register(PM_Hackathon_Winner)
+admin.site.register(Dependency)
 class TagsAdmin(admin.ModelAdmin):
     list_display = ("tagText", "is_public", "color")
     search_fields = ("tagText",)

@@ -22,7 +22,7 @@ from django.core.context_processors import csrf
 from django.db.models import Sum
 from PManager.viewsExt.tools import templateTools
 from tracker.settings import GIFT_USD_RATE
-
+from django.contrib.auth.decorators import login_required
 
 class InterfaceForm(forms.ModelForm):
     class Meta:
@@ -118,6 +118,58 @@ def projectList(request, **kwargs):
     })
     c.update(kwargs)
     t = loader.get_template('details/project_list.html')
+    return HttpResponse(t.render(c))
+
+
+@login_required
+def projectListFrameAjax(request, **kwargs):
+    from PManager.models import Dependency
+    # profile = request.user.get_profile()
+    project_id = int(request.POST.get('id', 0))
+    checked = int(request.POST.get('checked', False))
+    try:
+        project = PM_Project.objects.get(pk=project_id)
+    except PM_Project.DoesNotExist:
+        return HttpResponse('Project does not exist')
+
+    if project_id:
+        try:
+            dep = Dependency.objects.get(
+                dependency=project,
+                user=request.user
+            )
+            if not checked:
+                dep.delete()
+
+        except Dependency.DoesNotExist:
+            if checked:
+                dep = Dependency(
+                    user=request.user,
+                    dependency=project
+                )
+                dep.save()
+
+        return HttpResponse('ok')
+
+    return HttpResponse('error')
+
+@login_required
+def projectListFrame(request, **kwargs):
+    jira = request.GET.get('jira', '')
+    profile = request.user.get_profile()
+    if not profile.jira_account:
+        profile.jira_account = jira
+        profile.save()
+
+    if profile.jira_account != jira:
+        raise Http404
+
+    projects = PM_Project.objects.filter(public=True).order_by('-id')
+    c = RequestContext(request, {
+        'projects': projects
+    })
+    t = loader.get_template('details/project_list_frame.html')
+
     return HttpResponse(t.render(c))
 
 

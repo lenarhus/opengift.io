@@ -358,6 +358,15 @@ class PM_Project(models.Model):
         app_label = 'PManager'
 
 
+class Dependency(models.Model):
+    project = models.ForeignKey('PM_Project', null=True, blank=True, related_name='dependencies')
+    user = models.ForeignKey(User, null=True, blank=True, related_name='dependencies')
+    dependency = models.ForeignKey('PM_Project', related_name='using')
+
+    class Meta:
+        app_label = 'PManager'
+
+
 class LikesHits(models.Model):
     ip = models.CharField(max_length=255, verbose_name=u'IP', db_index=True)
     milestone = models.ForeignKey('PM_Milestone', null=True, blank=True, related_name='likesHits')

@@ -183,6 +183,10 @@ class MainPage:
             user = authenticate(code=code)
             if user and user.is_active:
                 login(request, user)
+                backurl = request.GET.get('backurl', '')
+                if backurl:
+                    return HttpResponseRedirect(backurl)
+
                 return HttpResponseRedirect( '/wallet/')           
             else:
                 resp = GithubAuth.get_token(code)

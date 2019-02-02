@@ -14,7 +14,10 @@ from PManager.viewsExt.faq import list as faq_list
 from PManager.viewsExt.notice import noticeSetRead
 from PManager.viewsExt.task_drafts import taskdraft_detail, taskdraft_task_discussion, \
     taskdraft_resend_invites, taskdraft_accept_developer
-from PManager.viewsExt.projects import projectDetailDonate, projectList, projectDetailAjax, projectDetailAdd, projectDetailEdit, projectDetailServer, projectDetail, projectDetailPublic, addInterface, removeInterface, checkUniqRepNameResponder, \
+from PManager.viewsExt.projects import projectDetailDonate, projectList, projectListFrame, projectListFrameAjax, \
+    projectDetailAjax, projectDetailAdd, projectDetailEdit, projectDetailServer, \
+    projectDetail, projectDetailPublic, addInterface, removeInterface, \
+    checkUniqRepNameResponder, \
     project_server_setup, project_server_status
 from PManager.viewsExt.file_view import docxView
 from PManager.viewsExt.keys import KeyHandler
@@ -36,7 +39,8 @@ from PManager.models.tasks import PM_Project
 from PManager.models.payments import Fee, Credit, PaymentRequest
 from django.contrib.auth.models import User
 from PManager.viewsExt.agreements import ajax_handler as agreements_ajax
-from PManager.viewsExt.blockchain import blockchainMain, blockchainAjax, blockchainIncome, paypalExecute
+from PManager.viewsExt.blockchain import blockchainMain, blockchainAjax, \
+    blockchainIncome, paypalExecute
 from PManager.viewsExt.telegram import botPage
 from PManager.viewsExt.public import Public
 from PManager.viewsExt.crypto import get_paid_btc
@@ -101,9 +105,13 @@ urlpatterns = patterns('',
                        url(r'^project/edit/', MainPage.indexRender,
                            {'widgetList': ["project_edit"], 'activeMenuItem': 'project'}),
                        url(r'^project/add/', projectDetailAdd),
-                       url(r'^project/list/', projectList, {'need_inverse': True}),
+                    url(r'^project/list/jira/ajax/', projectListFrameAjax, {'need_inverse': True}),
+                       url(r'^project/list/jira/', projectListFrame, {'need_inverse': True}),
+
+                        url(r'^project/list/', projectList, {'need_inverse': True}),
                        url(r'^project/edit/check_repository_name', checkUniqRepNameResponder),
                        # }}}
+
                        # {{{ Tasks
                        url(r'^task_handler', taskListAjax, name='task-handler'),
                        url(r'^task/add/', taskDetail),

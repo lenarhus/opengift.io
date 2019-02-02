@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+</head>
+<body>
+<input class="js-search" type="text"
+       name="search" placeholder="Search plugins and frameworks..." />
+{% for project in projects %}
+    <div class="js-project-elem"><input data-id="{{ project.id }}" {% if project.inDepList %}checked{% endif %} class="js-check-project" type="checkbox" /> <span>{{ project.name }}</span></div>
+{% endfor %}
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script>
+    $(function () {
+        var timeout;
+        $('.js-search').keyup(function () {
+            var t = $(this);
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(function () {
+                var $list = $('.js-project-elem');
+                if (t.val()) {
+                    $list.each(function () {
+                        if ($(this).text().toLowerCase()
+                            .indexOf(t.val().toLowerCase()) > -1) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    $list.show();
+                }
+            }, 500);
+        });
+
+        $('.js-check-project').click(function() {
+            var checked = $(this).is(':checked');
+            var projectId = $(this).data('id');
+            $.post(
+                '/project/list/jira/ajax/',
+                {
+                    'id': projectId,
+                    'checked': checked ? 1 : 0
+                },
+                function (data) {
+                    console.log(data);
+                }
+            )
+        })
+    })
+</script>
+</body>
+</html>

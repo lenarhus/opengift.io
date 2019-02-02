@@ -138,7 +138,8 @@ class PM_User(models.Model):
     blockchain_cert = models.CharField(blank=True, null=True, max_length=2000)
     blockchain_wallet = models.CharField(blank=True, null=True, max_length=100)
     opengifter_level = models.CharField(blank=True, null=True, max_length=100, choices=level_choices)
-    github_id= models.CharField(max_length=255, null=True, blank=True)
+    github_id = models.CharField(max_length=255, null=True, blank=True)
+    jira_account = models.CharField(max_length=255, null=True, blank=True)
 
     @property
     def rating(self):
