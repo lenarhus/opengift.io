@@ -354,6 +354,12 @@ class PM_Project(models.Model):
 
         super(self.__class__, self).save(*args, **kwargs)
 
+    def getJson(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
     class Meta:
         app_label = 'PManager'
 

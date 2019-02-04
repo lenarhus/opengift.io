@@ -648,9 +648,45 @@ def __task_message(request):
     return response_text
 
 
+def jiraCreateTask(request):
+    jira = request.GET.get('jira', None)
+    text = request.POST.get('text', None)
+    projectId = request.POST.get('project', None)
+    issue_id = request.POST.get('issueId', None)
+
+    if jira and text and projectId:
+        try:
+            user = PM_User.objects.get(
+                jira_account=jira
+            ).user
+
+            task = PM_Task.createByString(
+                taskName=text,
+                currentUser=user,
+                uploadedFiles=None,
+                project=PM_Project.objects.get(pk=projectId)
+            )
+            message = task.systemMessage(
+                text,
+                user,
+                'EXTERNAL_REQUIREMENT'
+            )
+            message.jira_integration_id = jira
+            message.jira_issue_id = issue_id
+            message.save()
+
+
+            return HttpResponse(task.getJson())
+
+        except PM_User.DoesNotExist, PM_Project.DoesNotExist:
+            raise Http404
+
+    raise Http404
+
+
 def jiraGetAssigned(request):
     jira = request.GET.get('jira', None)
-    issue_id = int(request.POST.get('issue_id', 0))
+    issue_id = int(request.GET.get('issue_id', 0))
 
     if jira and issue_id:
         try:
@@ -658,7 +694,11 @@ def jiraGetAssigned(request):
                 jira_integration_id=jira,
                 jira_issue_id=issue_id
             )
-            return HttpResponse(message.task.getJson())
+            mes = message.task.getJson()
+            mes.update({
+                'requirementsQty': message.task.messages.filter(code='EXTERNAL_REQUIREMENT').count()
+            })
+            return HttpResponse(json.dumps(mes))
         except PM_Task_Message.DoesNotExist:
             return HttpResponse('')
     else:

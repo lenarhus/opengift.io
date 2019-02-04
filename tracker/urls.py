@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from PManager.views import MainPage, Brains, add_timer
 from PManager.viewsExt.git_view import GitView
-from PManager.viewsExt.tasks import jiraGetAssigned, jiraAssign, taskSimilar, taskListAjax, ajaxNewTaskWizardResponder, microTaskAjax, taskDetail
+from PManager.viewsExt.tasks import jiraCreateTask, jiraGetAssigned, jiraAssign, taskSimilar, taskListAjax, ajaxNewTaskWizardResponder, microTaskAjax, taskDetail
 from PManager.viewsExt.messages import ajaxResponder as messagesAjaxResponder
 from PManager.viewsExt.files import fileSave, ajaxFilesResponder, AjaxFileUploader, DeleteUploadedFile
 from PManager.viewsExt.setup import register, recall
@@ -14,7 +14,7 @@ from PManager.viewsExt.faq import list as faq_list
 from PManager.viewsExt.notice import noticeSetRead
 from PManager.viewsExt.task_drafts import taskdraft_detail, taskdraft_task_discussion, \
     taskdraft_resend_invites, taskdraft_accept_developer
-from PManager.viewsExt.projects import projectDetailDonate, projectList, projectListFrame, projectListFrameAjax, \
+from PManager.viewsExt.projects import projectDetailDonate, requirementsList, projectList, projectListFrame, projectListFrameAjax, \
     projectDetailAjax, projectDetailAdd, projectDetailEdit, projectDetailServer, \
     projectDetail, projectDetailPublic, addInterface, removeInterface, \
     checkUniqRepNameResponder, \
@@ -106,11 +106,12 @@ urlpatterns = patterns('',
                            {'widgetList': ["project_edit"], 'activeMenuItem': 'project'}),
                        url(r'^project/add/', projectDetailAdd),
                        url(r'^project/list/jira/ajax/', projectListFrameAjax, {'need_inverse': True}),
+                       url(r'^project/list/jira/requirements/', requirementsList, {'need_inverse': True}),
                        url(r'^project/list/jira/', projectListFrame, {'need_inverse': True}),
                        url(r'^tasks/get_similar', taskSimilar),
                        url(r'^tasks/jira/assign/', jiraAssign),
                        url(r'^tasks/jira/get_assigned/', jiraGetAssigned),
-
+                       url(r'^tasks/jira/create/', jiraCreateTask),
                         url(r'^project/list/', projectList, {'need_inverse': True}),
                        url(r'^project/edit/check_repository_name', checkUniqRepNameResponder),
                        # }}}

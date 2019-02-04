@@ -153,6 +153,30 @@ def projectListFrameAjax(request, **kwargs):
 
     return HttpResponse('error')
 
+
+def requirementsList(request, **kwargs):
+    from PManager.models import PM_User, Dependency
+    jira = request.GET.get('jira', '')
+    if jira:
+        try:
+            user = PM_User.objects.get(
+                jira_account=jira
+            ).user
+            projects = PM_Project.objects.filter(
+                id__in=user.dependencies.values_list('dependency__id', flat=True)
+            )
+            requirements = []
+
+            for project in projects:
+                requirements.append(project.getJson())
+
+            return HttpResponse(json.dumps(requirements))
+        except PM_User.DoesNotExist:
+            raise Http404
+
+    raise Http404
+
+
 @login_required
 def projectListFrame(request, **kwargs):
     jira = request.GET.get('jira', '')
