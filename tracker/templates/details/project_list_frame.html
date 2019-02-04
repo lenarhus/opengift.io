@@ -5,8 +5,11 @@
 <body>
 <input class="js-search" type="text"
        name="search" placeholder="Search plugins and frameworks..." />
-{% for project in projects %}
-    <div class="js-project-elem"><input data-id="{{ project.id }}" {% if project.inDepList %}checked{% endif %} class="js-check-project" type="checkbox" /> <span>{{ project.name }}</span></div>
+{% for project in aProjects %}
+    <div class="js-project-elem"><input data-id="{{ project.id }}"
+            {% if project.isDep %}checked="checked"{% endif %}
+            class="js-check-project" type="checkbox" /> <span>{{ project.name }}</span>
+    </div>
 {% endfor %}
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"

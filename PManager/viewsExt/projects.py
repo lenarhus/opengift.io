@@ -164,9 +164,20 @@ def projectListFrame(request, **kwargs):
     if profile.jira_account != jira:
         raise Http404
 
+    aExistDependency = []
+    for dep in request.user.dependencies.all():
+        aExistDependency.append(dep.dependency.id)
+
+    aProjects = []
     projects = PM_Project.objects.filter(public=True).order_by('-id')
+    for project in projects:
+        if project.id in aExistDependency:
+            setattr(project, 'isDep', 1)
+
+        aProjects.append(project)
+
     c = RequestContext(request, {
-        'projects': projects
+        'aProjects': aProjects
     })
     t = loader.get_template('details/project_list_frame.html')
 

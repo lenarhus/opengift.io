@@ -648,6 +648,104 @@ def __task_message(request):
     return response_text
 
 
+def jiraGetAssigned(request):
+    jira = request.GET.get('jira', None)
+    issue_id = int(request.POST.get('issue_id', 0))
+
+    if jira and issue_id:
+        try:
+            message = PM_Task_Message.objects.get(
+                jira_integration_id=jira,
+                jira_issue_id=issue_id
+            )
+            return HttpResponse(message.task.getJson())
+        except PM_Task_Message.DoesNotExist:
+            return HttpResponse('')
+    else:
+        return HttpResponse('not_enough_params')
+
+
+def jiraAssign(request):
+    jira = request.GET.get('jira', None)
+    text = request.POST.get('text', '')
+    task_id = int(request.POST.get('task_id', 0))
+    issue_id = int(request.POST.get('issue_id', 0))
+
+    if text and task_id and jira and issue_id:
+        try:
+            task = PM_Task.objects.get(
+                pk=task_id
+            )
+
+            try:
+                messageExists = PM_Task_Message.objects.get(
+                    jira_integration_id=jira,
+                    jira_issue_id=issue_id,
+                    task=task
+                )
+
+                return HttpResponse('already_assigned')
+
+            except PM_Task_Message.DoesNotExist:
+
+                try:
+                    user = PM_User.objects.get(jira_account=jira).user
+
+                    message = task.systemMessage(
+                        text,
+                        user,
+                        'EXTERNAL_REQUIREMENT'
+                    )
+                    message.jira_integration_id = jira
+                    message.jira_issue_id = issue_id
+                    message.save()
+
+                    return HttpResponse('ok')
+                except PM_User.DoesNotExist:
+                    raise HttpResponse('user_not_exists')
+
+        except PM_Task.DoesNotExist:
+            raise HttpResponse('task_not_exists')
+
+    else:
+        return HttpResponse('not_enough_params')
+
+
+def taskSimilar(request):
+    from PManager.models import Dependency
+    text = request.GET.get('text', '')
+    jira = request.GET.get('jira', '')
+
+    if not text or not jira:
+        return HttpResponse('params_error')
+
+    aTasks = []
+    try:
+        profile = PM_User.objects.get(
+            jira_account=jira
+        )
+        dep = Dependency.objects.filter(
+            user=profile.user
+        )
+
+        for dependency in dep:
+            similarTasks = PM_Task.getSimilar(text, dependency.dependency)
+
+            if similarTasks:
+                for task in similarTasks:
+                    aTasks.append(task.getJson())
+
+
+    except PM_User.DoesNotExist:
+        return HttpResponse('user_not_found')
+
+    result = 'not_found'
+    if aTasks:
+        result = json.dumps(aTasks)
+
+    return HttpResponse(result)
+
+
 def taskListAjax(request):
     from PManager.models import PM_Files, PM_User_PlanTime, PM_Task_Status
 

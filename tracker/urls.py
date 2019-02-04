@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from PManager.views import MainPage, Brains, add_timer
 from PManager.viewsExt.git_view import GitView
-from PManager.viewsExt.tasks import taskListAjax, ajaxNewTaskWizardResponder, microTaskAjax, taskDetail
+from PManager.viewsExt.tasks import jiraGetAssigned, jiraAssign, taskSimilar, taskListAjax, ajaxNewTaskWizardResponder, microTaskAjax, taskDetail
 from PManager.viewsExt.messages import ajaxResponder as messagesAjaxResponder
 from PManager.viewsExt.files import fileSave, ajaxFilesResponder, AjaxFileUploader, DeleteUploadedFile
 from PManager.viewsExt.setup import register, recall
@@ -105,8 +105,11 @@ urlpatterns = patterns('',
                        url(r'^project/edit/', MainPage.indexRender,
                            {'widgetList': ["project_edit"], 'activeMenuItem': 'project'}),
                        url(r'^project/add/', projectDetailAdd),
-                    url(r'^project/list/jira/ajax/', projectListFrameAjax, {'need_inverse': True}),
+                       url(r'^project/list/jira/ajax/', projectListFrameAjax, {'need_inverse': True}),
                        url(r'^project/list/jira/', projectListFrame, {'need_inverse': True}),
+                       url(r'^tasks/get_similar', taskSimilar),
+                       url(r'^tasks/jira/assign/', jiraAssign),
+                       url(r'^tasks/jira/get_assigned/', jiraGetAssigned),
 
                         url(r'^project/list/', projectList, {'need_inverse': True}),
                        url(r'^project/edit/check_repository_name', checkUniqRepNameResponder),

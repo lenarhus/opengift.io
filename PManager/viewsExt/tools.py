@@ -150,6 +150,7 @@ class templateTools:
             'critically_up': 'log_message_task_critically_up.html',
             'critically_down': 'log_message_task_close.html',
             'set_plan_time': 'log_message_task_set_plan_time.html',
+            'external_requirement': 'log_message_external_requirement.html',
             'time_request': 'log_message_task_time_request.html',
             'confirm_estimation': 'log_message_task_status_revision.html',
             'task_open': 'log_message_task_critically_up.html',

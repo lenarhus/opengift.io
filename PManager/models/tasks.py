@@ -1829,6 +1829,8 @@ class PM_Task(models.Model):
             )
         }))
 
+        return message
+
     def canEdit(self, user):
         return (
             user.is_superuser
@@ -1862,6 +1864,18 @@ class PM_Task(models.Model):
                 self.number = 1
 
         super(self.__class__, self).save(*args, **kwargs)
+
+    def getJson(self):
+        return {
+            'name': self.name,
+            'text': self.text,
+            'number': self.number,
+            'id': self.id,
+            'project': {
+                'id': self.project.id,
+                'name': self.project.name
+            }
+        }
 
     def __str__(self):
         return (unicode(self.parentTask.name) + ' / ' if self.parentTask else '') + unicode(self.name)
@@ -2002,6 +2016,8 @@ class PM_Task_Message(models.Model):
     vote = models.BooleanField(default=False)
     requested_time = models.IntegerField(blank=True, null=True)
     donated = models.FloatField(blank=True, null=True)
+    jira_integration_id = models.CharField(max_length=255, blank=True, null=True)
+    jira_issue_id = models.IntegerField(null=True, blank=True)
     requested_time_approved = models.BooleanField(default=False)
     requested_time_approved_by = models.ForeignKey(User, null=True, blank=True, related_name="approvedTimeRequests")
     requested_time_approve_date = models.DateTimeField(blank=True, null=True)
