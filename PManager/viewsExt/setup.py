@@ -34,7 +34,6 @@ def register(request):
             project = PM_Project(
                 name=u'Мой проект',
                 description=u'Описание нового проекта',
-                tracker=PM_Tracker.objects.get(pk=1),
                 author=User.objects.get(pk=1),
                 payer=User.objects.get(pk=1)
             )

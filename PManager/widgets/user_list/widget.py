@@ -23,7 +23,7 @@ def union(it1, it2):
 def widget(request, headerValues, a, b):
     users = TaskWidgetManager.getUsersThatUserHaveAccess(request.user, headerValues['CURRENT_PROJECT'])
     users = users.order_by('last_name')
-    projects = PM_Project.objects.filter(tracker=TRACKER, closed=False, locked=False)
+    projects = PM_Project.objects.filter(closed=False, locked=False)
     now = timezone.make_aware(datetime.datetime.now(), timezone.get_current_timezone())
     arFilter = {}
 

@@ -19,7 +19,7 @@ def set_to_midnight(dt):
 
 def widget(request, headerValues, a, b):
     bAllUsers = request.GET.get('show_all') == 'Y'
-    projects = PM_Project.objects.filter(tracker=TRACKER, closed=False, locked=False)
+    projects = PM_Project.objects.filter(closed=False, locked=False)
     now = timezone.make_aware(datetime.datetime.now(), timezone.get_current_timezone())
 
     users = TaskWidgetManager.getUsersThatUserHaveAccess(request.user, headerValues['CURRENT_PROJECT'])

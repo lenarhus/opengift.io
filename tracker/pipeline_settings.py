@@ -327,5 +327,11 @@ PIPELINE_CSS = {
             'widgets/task_detail/style.css',
         ),
         'output_filename': 'css_compressed/task_detail.css'
-    }
+    },
+    'jira_projects': {
+        'source_filenames': (
+            'css/project.list.css',
+        ),
+        'output_filename': 'css_compressed/jira.projects.css'
+    },
 }

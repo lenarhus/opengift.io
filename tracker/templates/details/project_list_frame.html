@@ -1,16 +1,39 @@
+{% load compressed %}
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
+    {% compressed_css 'jira_projects' %}
 </head>
 <body>
-<input class="js-search" type="text"
-       name="search" placeholder="Search plugins and frameworks..." />
-{% for project in aProjects %}
-    <div class="js-project-elem"><input data-id="{{ project.id }}"
-            {% if project.isDep %}checked="checked"{% endif %}
-            class="js-check-project" type="checkbox" /> <span>{{ project.name }}</span>
+<div class="og-plugin-cp">
+    <div class="og-plugin-cp-wrapper">
+        <div class="og-plugin-cp-wrapper-search">
+            <input class="js-search og-plugin-cp-wrapper-search-input" type="text" name="search"
+                   placeholder="Search plugins and frameworks...">
+        </div>
+        <div class="og-plugin-cp-pre-text">
+            <div class="og-plugin-cp-pre-text-left">
+                <b class="js-qty">{{ modulesQty }}</b> open-source modules in use
+            </div>
+{#            <div class="og-plugin-cp-pre-text-right">#}
+{#                <a href="" class="og-plugin-cp-btn">Перейти к задачам</a>#}
+{#            </div>#}
+        </div>
+        <div class="og-plugin-cp-wrapper-projects">
+            {% for project in aProjects %}
+            <div class="js-project-elem{% if project.isDep %} checked{% endif %} og-plugin-cp-elem-wr">
+                <label class="og-plugin-cp-elem">
+                    <input data-id="{{ project.id }}" {% if project.isDep %}checked="checked"{% endif %} class="js-check-project" type="checkbox">
+                    <span  class="og-plugin-cp-elem-span">{{ project.name }}</span>
+                    {% if project.imagePath %}
+                    <img class="og-plugin-cp-elem-img" src="{{ project.imagePath }}">
+                    {% endif %}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
+</div>
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -45,11 +68,20 @@
         $('.js-check-project').click(function() {
             var checked = $(this).is(':checked');
             var projectId = $(this).data('id');
+            var $q = $('.js-qty');
+            $(this).closest('.js-project-elem')[checked ? 'addClass' : 'removeClass']('checked');
+
+            if (checked) {
+                $q.text(parseInt($q.text()) + 1);
+            } else {
+                $q.text(parseInt($q.text()) - 1);
+            }
             $.post(
                 '/project/list/jira/ajax/',
                 {
                     'id': projectId,
-                    'checked': checked ? 1 : 0
+                    'checked': checked ? 1 : 0,
+                    'jira': '{{ request.GET.jira }}'
                 },
                 function (data) {
                     console.log(data);

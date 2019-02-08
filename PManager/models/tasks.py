@@ -221,7 +221,7 @@ class PM_Project(models.Model):
     commercial_analogs = models.CharField(max_length=500, null=True, blank=True)
     image = models.ImageField(upload_to=path_and_rename("project_thumbnails"), null=True,
                               verbose_name=u'Picture', blank=True)
-    tracker = models.ForeignKey(PM_Tracker, related_name='projects')
+    tracker = models.ForeignKey(PM_Tracker, related_name='projects', blank=True, null=True)
     repository = models.CharField(max_length=255, blank=True, verbose_name=u'Repo code')
     link_site = models.CharField(max_length=255, blank=True, verbose_name=u'Site')
     link_github = models.CharField(max_length=255, blank=True, verbose_name=u'Link to GitHub')
@@ -232,8 +232,8 @@ class PM_Project(models.Model):
     closed = models.BooleanField(blank=True, verbose_name=u'Архив', default=False, db_index=True)
     locked = models.BooleanField(blank=True, verbose_name=u'Заблокирован', default=False, db_index=True)
     public = models.BooleanField(blank=True, verbose_name=u'Public', default=False, db_index=True)
-    settings = models.CharField(max_length=1000)
-    payer = models.ForeignKey(User)
+    settings = models.CharField(max_length=1000, blank=True, null=True)
+    payer = models.ForeignKey(User, blank=True, null=True)
     # tags = models.ManyToManyField(Tags, null=True, blank=True, related_name="tagProjects")
     specialties = models.ManyToManyField('Specialty', blank=True, null=True, related_name='projects',
                                          verbose_name=u'Направления')
@@ -357,7 +357,8 @@ class PM_Project(models.Model):
     def getJson(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'imagePath': self.imagePath
         }
 
     class Meta:

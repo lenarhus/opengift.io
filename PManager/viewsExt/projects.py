@@ -193,16 +193,21 @@ def projectListFrame(request, **kwargs):
         aExistDependency.append(dep.dependency.id)
 
     aProjects = []
+    qty = 0
     projects = PM_Project.objects.filter(public=True).order_by('-id')
     for project in projects:
         if project.id in aExistDependency:
             setattr(project, 'isDep', 1)
+            qty += 1
 
         aProjects.append(project)
 
     c = RequestContext(request, {
-        'aProjects': aProjects
+        'aProjects': aProjects,
+        'modulesQty': qty
     })
+
+
     t = loader.get_template('details/project_list_frame.html')
 
     return HttpResponse(t.render(c))
