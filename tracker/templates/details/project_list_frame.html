@@ -21,15 +21,24 @@
         </div>
         <div class="og-plugin-cp-wrapper-projects">
             {% for project in aProjects %}
-            <div class="js-project-elem{% if project.isDep %} checked{% endif %} og-plugin-cp-elem-wr">
-                <label class="og-plugin-cp-elem">
-                    <input data-id="{{ project.id }}" {% if project.isDep %}checked="checked"{% endif %} class="js-check-project" type="checkbox">
-                    <span  class="og-plugin-cp-elem-span">{{ project.name }}</span>
+            <div class="js-project-elem {% if project.isDep %} checked{% endif %} og-plugin-cp-elem-wr">
+                <label class="og-plugin-cp-elem"><input data-id="{{ project.id }}"
+                                                      {% if project.isDep %}checked="checked"{% endif %}class="js-check-project"
+                                                      type="checkbox"> <span  class="og-plugin-cp-elem-span">{{ project.name }}</span>
                     {% if project.imagePath %}
-                    <img class="og-plugin-cp-elem-img" src="{{ project.imagePath }}">
+                    <img class="og-plugin-cp-elem-img" src="/media/{{ project.imagePath }}">
                     {% endif %}
                 </label>
             </div>
+{#            <div class="js-project-elem{% if project.isDep %} checked{% endif %} og-plugin-cp-elem-wr">#}
+{#                <label class="og-plugin-cp-elem">#}
+{#                    <input data-id="{{ project.id }}" {% if project.isDep %}checked="checked"{% endif %} class="js-check-project" type="checkbox">#}
+{#                    <span  class="og-plugin-cp-elem-span">{{ project.name }}</span>#}
+{#                    {% if project.imagePath %}#}
+{#                    <img class="og-plugin-cp-elem-img" src="{{ project.imagePath }}">#}
+{#                    {% endif %}#}
+{#                </label>#}
+{#            </div>#}
             {% endfor %}
         </div>
     </div>
